@@ -6,7 +6,14 @@ class URLSpider(scrapy.Spider):
     name = "url"
     start_urls = ['http://quotes.toscrape.com']
 
+    def __init__(self, max_depth=8, *args, **kwargs):
+        super(URLSpider, self).__init__(*args, **kwargs)
+        self.max_depth = int(max_depth)
+
     def parse(self, response):
+
+        # Get current depth
+        depth = response.meta.get('depth', 0)
         
         # Creates the folder if doesn't already exist
         output_dir = 'crawled_pages'
@@ -20,5 +27,10 @@ class URLSpider(scrapy.Spider):
         with open(filename, 'wb') as file:
             file.write(response.body)
 
-        # List of links to visit next
-        links = response.css('a::attr(href)')
+        # Break if depth is at or past max depth
+        if depth >= self.max_depth:
+            return
+
+        # Otherwise get links and follow them, incrimenting depth
+        for link in response.css('a.attr(href)').getall():
+            yield response.follow(link, callback=self.parse, meta={'depth': depth+1})
