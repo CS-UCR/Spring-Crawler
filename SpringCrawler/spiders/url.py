@@ -12,6 +12,10 @@ class URLSpider(scrapy.Spider):
 
     def parse(self, response):
 
+        # Exits if the page is empty
+        if response.body == None:
+            return
+
         # Get current depth
         depth = response.meta.get('depth', 0)
         

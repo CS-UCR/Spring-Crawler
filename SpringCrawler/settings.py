@@ -19,6 +19,10 @@ NEWSPIDER_MODULE = "SpringCrawler.spiders"
 # Obey robots.txt rules
 ROBOTSTXT_OBEY = True
 
+# Configure the time it takes to give up connecting to a webpage
+DOWNLOAD_TIMEOUT = 5 # seconds
+RETRY_ENABLED = False # Does not retry to connect
+
 # Configure maximum concurrent requests performed by Scrapy (default: 16)
 #CONCURRENT_REQUESTS = 32
 
