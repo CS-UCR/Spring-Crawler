@@ -1,5 +1,6 @@
 import scrapy
 import os
+from SpringCrawler.deduplication import is_duplicate
 
 class URLSpider(scrapy.Spider):
 
@@ -32,6 +33,11 @@ class URLSpider(scrapy.Spider):
                 raise FileNotFoundError(f"Seed file '{seed_file}' not found.")
 
     def parse(self, response):
+
+        # Checks if the page is a near-duplicate
+        if is_duplicate(response.body):
+            self.log(f"Skipped duplicate page: {response.url}")
+            return
 
         # Tracks the number of URLs the spider has seen
         self.n_seen += 1
