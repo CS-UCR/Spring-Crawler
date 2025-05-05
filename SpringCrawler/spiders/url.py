@@ -4,14 +4,32 @@ import os
 class URLSpider(scrapy.Spider):
 
     name = "url"
-    start_urls = ['http://quotes.toscrape.com']
 
-    def __init__(self, max_depth=1, num_pages=10000, *args, **kwargs):
+    def __init__(self, max_depth=1, num_pages=10000, seed_file="seeds.txt", *args, **kwargs):
         super(URLSpider, self).__init__(*args, **kwargs)
         self.max_depth = int(max_depth)
         self.max_pages = int(num_pages)
         self.n_pages = 0
         self.n_seen = 0
+
+
+        # Check if the seed file exists        
+        self.start_urls = []
+
+        # Load the seed URLs from the specified file
+        # If the file is not found, use a default seed URL
+        try:
+            with open(seed_file, 'r') as f:
+                self.start_urls = [line.strip() for line in f if line.strip()]
+        except FileNotFoundError:
+            if seed_file == "seeds.txt":
+                self.logger.warning(f"Default seed file 'seeds.txt' not found. Using fallback URL.")
+                
+                # If the seed file is not found, use a default URL
+                # This is the default URL for testing purposes
+                self.start_urls = ['http://quotes.toscrape.com']
+            else:
+                raise FileNotFoundError(f"Seed file '{seed_file}' not found.")
 
     def parse(self, response):
 
