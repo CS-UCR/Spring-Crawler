@@ -29,6 +29,6 @@ if [ -n "$OUTPUT_DIR" ]; then
   SCRAPY_CMND="$SCRAPY_CMND -a output_dir=$OUTPUT_DIR"
 fi
 
-eval $SCRAPY_CMND
+eval "$SCRAPY_CMND"
 
   
