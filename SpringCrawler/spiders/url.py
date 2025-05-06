@@ -74,5 +74,5 @@ class URLSpider(scrapy.Spider):
     def closed(self, reason):
         self.log(f"Spider closed: {reason}")
         self.log(f"Total pages visited: {self.n_seen}")
-        self.log(f"Near duplicates skipped: {self.duplicates}")
+        self.log(f"Near duplicates skipped: {self.n_skip}")
         self.log(f"Files saved: {self.n_pages}")
