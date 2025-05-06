@@ -10,7 +10,7 @@ def get_text_from_html(content: bytes) -> str:
     return soup.get_text(separator=' ', strip=True)
 
 def comput_simhash(text: str) -> Simhash:
-    return Simhash(text)
+    return Simhash(text.split())
 
 def is_duplicate(content: bytes) -> bool:
     text = get_text_from_html(content)
