@@ -15,10 +15,6 @@ set NUM_PAGES=%~2
 set DEPTH=%~3
 set OUTPUT_DIR=%~4
 
-if not exist venv (
-    python -m venv venv
-)
-
 set SCRAPY_CMND=scrapy crawl url -a seed_file=%SEED_FILE% -a num_pages=%NUM_PAGES%
 
 if not "%DEPTH%"=="" (

@@ -11,10 +11,6 @@ NUM_PAGES=$2
 DEPTH=$3
 OUTPUT_DIR=$4
 
-if [ ! -d "venv" ]; then
-  python3 -m venv venv
-fi
-
 SCRAPY_CMND="scrapy crawl url -a seed_file=$SEED_FILE -a num_pages=$NUM_PAGES"
 
 if [ -n "$DEPTH" ]; then
