@@ -50,6 +50,7 @@ class URLSpider(scrapy.Spider):
         # Stop the spider if the maximum pages have been reached
         if self.n_pages >= self.max_pages:
             self.crawler.engine.close_spider(self, reason="Page limit reached")
+            return
 
         # Get current depth
         depth = response.meta.get('depth', 0)

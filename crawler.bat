@@ -3,10 +3,12 @@ setlocal ENABLEDELAYEDEXPANSION
 
 if "%~1"=="" (
     echo Usage: crawler.bat ^<seed-file^> ^<num-pages^> ^<depth^> ^<output_dir^>
+    echo The seed-file and num-pages must be specified.
     exit /b 1
 )
 if "%~2"=="" (
     echo Usage: crawler.bat ^<seed-file^> ^<num-pages^> ^<depth^> ^<output_dir^>
+    echo The seed-file and num-pages must be specified.
     exit /b 1
 )
 
@@ -15,11 +17,6 @@ set NUM_PAGES=%~2
 set DEPTH=%~3
 set OUTPUT_DIR=%~4
 
-if not exist venv (
-    python -m venv venv
-)
-
-call venv\Scripts\activate.bat
 pip install --upgrade pip
 pip install -r requirements.txt
 
