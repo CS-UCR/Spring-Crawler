@@ -6,6 +6,7 @@ class URLSpider(scrapy.Spider):
 
     name = "url"
     start_urls = []
+    
 
     def __init__(self, max_depth=1, num_pages=10000, seed_file="seeds.txt", output_dir="crawled_pages",*args, **kwargs):
         super(URLSpider, self).__init__(*args, **kwargs)
@@ -13,12 +14,15 @@ class URLSpider(scrapy.Spider):
         self.max_pages = int(num_pages)
         self.n_pages = 0
         self.n_seen = 0
-        self.output_dir = output_dir
+        self.output_dir = os.path.abspath(output_dir)
+        self.seed_file = os.path.abspath(seed_file)
+        # Creates the folder if doesn't already exist
+        os.makedirs(self.output_dir, exist_ok=True)
 
         # Load the seed URLs from the specified file
         # If the file is not found, use a default seed URL
         try:
-            with open(seed_file, 'r') as f:
+            with open(self.seed_file, 'r') as f:
                 self.start_urls = [line.strip() for line in f if line.strip()]
         except FileNotFoundError:
             if seed_file == "seeds.txt":
@@ -47,9 +51,6 @@ class URLSpider(scrapy.Spider):
 
         # Get current depth
         depth = response.meta.get('depth', 0)
-        
-        # Creates the folder if doesn't already exist
-        os.makedirs(self.output_dir, exist_ok=True)
 
         # Sets the output filename to be the webpage's title
         # Probably should make the title unique in some way
