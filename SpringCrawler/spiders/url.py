@@ -5,17 +5,15 @@ from SpringCrawler.deduplication import is_duplicate
 class URLSpider(scrapy.Spider):
 
     name = "url"
+    start_urls = []
 
-    def __init__(self, max_depth=1, num_pages=10000, seed_file="seeds.txt", *args, **kwargs):
+    def __init__(self, max_depth=1, num_pages=10000, seed_file="seeds.txt", output_dir="crawled_pages",*args, **kwargs):
         super(URLSpider, self).__init__(*args, **kwargs)
         self.max_depth = int(max_depth)
         self.max_pages = int(num_pages)
         self.n_pages = 0
         self.n_seen = 0
-
-
-        # Check if the seed file exists        
-        self.start_urls = []
+        self.output_dir = output_dir
 
         # Load the seed URLs from the specified file
         # If the file is not found, use a default seed URL
@@ -34,14 +32,14 @@ class URLSpider(scrapy.Spider):
 
     def parse(self, response):
 
+        # Tracks the number of URLs the spider has seen
+        self.n_seen += 1
+        self.log(f"Seen {self.n_seen} pages so far.")
+
         # Checks if the page is a near-duplicate
         if is_duplicate(response.body):
             self.log(f"Skipped duplicate page: {response.url}")
             return
-
-        # Tracks the number of URLs the spider has seen
-        self.n_seen += 1
-        self.log(f"Seen {self.n_seen}")
         
         # Stop the spider if the maximum pages have been reached
         if self.n_pages >= self.max_pages:
@@ -51,13 +49,12 @@ class URLSpider(scrapy.Spider):
         depth = response.meta.get('depth', 0)
         
         # Creates the folder if doesn't already exist
-        output_dir = 'crawled_pages'
-        os.makedirs(output_dir, exist_ok=True)
+        os.makedirs(self.output_dir, exist_ok=True)
 
         # Sets the output filename to be the webpage's title
         # Probably should make the title unique in some way
         title = response.css('title::text')[0].extract().replace(" ","")
-        filename = os.path.join(output_dir, f"{title}.html")
+        filename = os.path.join(self.output_dir, f"{title}_{self.n_pages}.html")
 
         # Write to file
         with open(filename, 'wb') as file:
