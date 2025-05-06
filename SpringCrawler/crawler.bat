@@ -19,10 +19,6 @@ if not exist venv (
     python -m venv venv
 )
 
-call venv\Scripts\activate.bat
-pip install --upgrade pip
-pip install -r requirements.txt
-
 set SCRAPY_CMND=scrapy crawl url -a seed_file=%SEED_FILE% -a num_pages=%NUM_PAGES%
 
 if not "%DEPTH%"=="" (

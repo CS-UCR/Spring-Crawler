@@ -15,10 +15,6 @@ if [ ! -d "venv" ]; then
   python3 -m venv venv
 fi
 
-source venv/bin/activate
-pip install --upgrade pip
-pip install -r requirements.txt
-
 SCRAPY_CMND="scrapy crawl url -a seed_file=$SEED_FILE -a num_pages=$NUM_PAGES"
 
 if [ -n "$DEPTH" ]; then
