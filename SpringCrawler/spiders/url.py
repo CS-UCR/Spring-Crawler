@@ -14,6 +14,7 @@ class URLSpider(scrapy.Spider):
         self.max_pages = int(num_pages)
         self.n_pages = 0
         self.n_seen = 0
+        self.n_skip = 0
         self.output_dir = os.path.abspath(output_dir)
         self.seed_file = os.path.abspath(seed_file)
         # Creates the folder if doesn't already exist
@@ -43,6 +44,7 @@ class URLSpider(scrapy.Spider):
         # Checks if the page is a near-duplicate
         if is_duplicate(response.body):
             self.log(f"Skipped duplicate page: {response.url}")
+            self.n_skip += 1
             return
         
         # Stop the spider if the maximum pages have been reached
@@ -68,3 +70,9 @@ class URLSpider(scrapy.Spider):
             # Otherwise get links and follow them, incrimenting depth
             for link in response.css('a::attr(href)').getall():
                 yield response.follow(link, callback=self.parse, meta={'depth': depth+1})
+
+    def closed(self, reason):
+        self.log(f"Spider closed: {reason}")
+        self.log(f"Total pages visited: {self.n_seen}")
+        self.log(f"Near duplicates skipped: {self.duplicates}")
+        self.log(f"Files saved: {self.n_pages}")
