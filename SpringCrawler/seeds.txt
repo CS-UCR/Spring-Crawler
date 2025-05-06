@@ -1,1 +1,15 @@
 http://quotes.toscrape.com
+http://books.toscrape.com
+https://webscraper.io/test-sites/e-commerce/static
+https://news.ycombinator.com/
+https://info.cern.ch/
+https://www.bbc.com/news
+https://www.w3schools.com/html/
+https://arstechnica.com/
+https://developer.mozilla.org/en-US/docs/Web
+https://docs.python.org/3/
+https://apnews.com/
+https://towardsdatascience.com/
+https://www.geeksforgeeks.org/
+https://www.reuters.com/
+https://edition.cnn.com/
