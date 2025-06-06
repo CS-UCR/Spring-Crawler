@@ -1,16 +1,16 @@
 import scrapy
 import os
-from SpringCrawler.deduplication import is_duplicate
+from SpringCrawler.deduplication import is_duplicate as dd
 
 class URLSpider(scrapy.Spider):
 
-    name = "url2"
+    name = "url"
     start_urls = []
     simhash_table = {}
     
 
     def __init__(self, max_depth=4, num_pages=100000, seed_file="seeds.txt", output_dir="newcrawl",*args, **kwargs):
-        super(URL2Spider, self).__init__(*args, **kwargs)
+        super(URLSpider, self).__init__(*args, **kwargs)
         self.max_depth = int(max_depth)
         self.max_pages = int(num_pages)
         self.n_pages = 0
