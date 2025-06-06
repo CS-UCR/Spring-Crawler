@@ -1,5 +1,6 @@
 http://quotes.toscrape.com
 http://books.toscrape.com
+https://www.wikipedia.org/
 https://webscraper.io/test-sites/e-commerce/static
 https://news.ycombinator.com/
 https://info.cern.ch/
