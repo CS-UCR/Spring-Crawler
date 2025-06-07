@@ -1,14 +1,15 @@
 import scrapy
 import os
-from SpringCrawler.deduplication import is_duplicate
+from SpringCrawler.deduplication import is_duplicate as dd
 
 class URLSpider(scrapy.Spider):
 
     name = "url"
     start_urls = []
+    simhash_table = {}
     
 
-    def __init__(self, max_depth=1, num_pages=10000, seed_file="seeds.txt", output_dir="crawled_pages",*args, **kwargs):
+    def __init__(self, max_depth=4, num_pages=100000, seed_file="seeds.txt", output_dir="newcrawl",*args, **kwargs):
         super(URLSpider, self).__init__(*args, **kwargs)
         self.max_depth = int(max_depth)
         self.max_pages = int(num_pages)
@@ -42,11 +43,11 @@ class URLSpider(scrapy.Spider):
         self.log(f"Seen {self.n_seen} pages so far.")
 
         # Checks if the page is a near-duplicate
-        if is_duplicate(response.body):
+        if dd.is_duplicate(response.body):
             self.log(f"Skipped duplicate page: {response.url}")
             self.n_skip += 1
             return
-        
+
         # Stop the spider if the maximum pages have been reached
         if self.n_pages >= self.max_pages:
             self.crawler.engine.close_spider(self, reason="Page limit reached")
@@ -55,10 +56,14 @@ class URLSpider(scrapy.Spider):
         # Get current depth
         depth = response.meta.get('depth', 0)
 
-        # Sets the output filename to be the webpage's title
-        # Probably should make the title unique in some way
-        title = response.css('title::text')[0].extract().replace(" ","")
-        filename = os.path.join(self.output_dir, f"{title}_{self.n_pages}.html")
+        # Sets the output filename to be the webpage's simhash
+        doc_simhash = dd.comput_simhash(dd.get_text_from_html(response.body))
+        filename = os.path.join(self.output_dir, f"{doc_simhash.value}.html")
+
+        # Maps the simhash to the url
+        if doc_simhash.value in self.simhash_table:
+            self.logger.warning(f"Simhash collision detected for {doc_simhash.value}")
+        self.simhash_table[doc_simhash.value] = response.url
 
         # Write to file
         with open(filename, 'wb') as file:
@@ -77,3 +82,7 @@ class URLSpider(scrapy.Spider):
         self.log(f"Total pages visited: {self.n_seen}")
         self.log(f"Near duplicates skipped: {self.n_skip}")
         self.log(f"Files saved: {self.n_pages}")
+        # Build hashmap.json
+        json_obj = json.dumps(self.simhash_table, indent=4)
+        with open('hashmap.json','w') as file:
+            file.write(json_obj)
