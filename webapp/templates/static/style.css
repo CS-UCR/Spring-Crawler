@@ -35,3 +35,17 @@ button:hover {
     margin-bottom: 1rem;
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
 }
+
+.error {
+    color: red;
+}
+
+.result p {
+    margin: 0.5rem 0;
+    color: #555;
+}
+
+.result a {
+    color: #007BFF;
+    text-decoration: none;
+}
